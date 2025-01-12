@@ -47,6 +47,25 @@ public class Pedido {
         return fecha;
     }
 
+    public BigDecimal getValorTotal() {
+        BigDecimal precio = getPrecio();
+        BigDecimal cantidad = new BigDecimal(getCantidad());
+        BigDecimal valorTotal = precio.multiply(cantidad);
+        return valorTotal;
+    }
+
+    public boolean isMasBaratoQue(Pedido otroPedido) {
+        Pedido pedidoMasBarato = otroPedido;
+        return pedidoMasBarato == null || getPrecio().multiply(new BigDecimal(getCantidad()))
+                .compareTo(pedidoMasBarato.getPrecio().multiply(new BigDecimal(pedidoMasBarato.getCantidad()))) < 0;
+    }
+
+    public boolean isMasCaroQue(Pedido otroPedido) {
+        Pedido pedidoMasCaro = otroPedido;
+        return pedidoMasCaro == null || getPrecio().multiply(new BigDecimal(getCantidad()))
+                .compareTo(pedidoMasCaro.getPrecio().multiply(new BigDecimal(pedidoMasCaro.getCantidad()))) > 0;
+    }
+
     @Override
     public String toString() {
         return "Pedido{" +
