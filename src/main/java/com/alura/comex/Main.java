@@ -19,7 +19,7 @@ public class Main {
         Pedido pedidoMasBarato = null;
         Pedido pedidoMasCaro = null;
 
-        CategoriasProcesadas categoriasProcesadas = new CategoriasProcesadas();
+        HashSet<String> listaCategorias = new HashSet<>();
         int totalDeCategorias = 0;
 
         for (int i = 0; i < pedidos.size(); i++) {
@@ -41,11 +41,13 @@ public class Main {
             totalDeProductosVendidos += pedidoActual.getCantidad();
             totalDePedidosRealizados++;
 
-            if (!categoriasProcesadas.contains(pedidoActual.getCategoria())) {
+            if (!listaCategorias.contains(pedidoActual.getCategoria())) {
               totalDeCategorias++;
-              categoriasProcesadas.add(pedidoActual.getCategoria());
+              listaCategorias.add(pedidoActual.getCategoria());
             }
         }
+
+        System.out.println(listaCategorias);
         InformeSintetico informe = new InformeSintetico(totalDePedidosRealizados, totalDeProductosVendidos, totalDeCategorias, montoDeVentas, pedidoMasBarato, pedidoMasCaro);
         System.out.println(informe);
     }
