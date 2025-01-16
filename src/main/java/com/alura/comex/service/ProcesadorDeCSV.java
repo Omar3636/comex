@@ -1,4 +1,6 @@
-package com.alura.comex;
+package com.alura.comex.service;
+
+import com.alura.comex.model.Pedido;
 
 import java.io.IOException;
 import java.math.BigDecimal;
