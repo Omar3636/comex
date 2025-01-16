@@ -66,6 +66,13 @@ public class Pedido {
                 .compareTo(pedidoMasCaro.getPrecio().multiply(new BigDecimal(pedidoMasCaro.getCantidad()))) > 0;
     }
 
+    public boolean estaVacio(Pedido pedido) {
+        if (pedido == null) {
+            return true;
+        }
+        return false;
+    }
+
     @Override
     public String toString() {
         return "Pedido{" +

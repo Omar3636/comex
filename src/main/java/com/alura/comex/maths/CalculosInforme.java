@@ -8,48 +8,43 @@ import java.math.BigDecimal;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 public class CalculosInforme {
     URL recursoCSV = ClassLoader.getSystemResource("pedidos.csv");
     ProcesadorDeCSV procesadorDeCSV = new ProcesadorDeCSV();
     ArrayList<Pedido> pedidos = procesadorDeCSV.procesarCSV(recursoCSV);
 
-    int totalDeProductosVendidos = 0;
-    int totalDePedidosRealizados = 0;
-    BigDecimal montoDeVentas = BigDecimal.ZERO;
     Pedido pedidoMasBarato = null;
+    AtomicReference<Pedido> pedidoMasBaratoRef = new AtomicReference<>(pedidoMasBarato);
     Pedido pedidoMasCaro = null;
+    AtomicReference<Pedido> pedidoMasCaroRef = new AtomicReference<>(pedidoMasCaro);
 
     public InformeSintetico generarInforme() {
-        HashSet<String> listaCategorias = new HashSet<>();
-        int totalDeCategorias = 0;
+        pedidos.forEach(p ->p.estaVacio(p));
+        pedidos.forEach(p -> { if (p.isMasBaratoQue(pedidoMasBaratoRef.get())) {pedidoMasBaratoRef.set(p);}});
+        pedidoMasBarato = pedidoMasBaratoRef.get();
+        pedidos.forEach(p -> { if (p.isMasCaroQue(pedidoMasCaroRef.get())) {pedidoMasCaroRef.set(p);}});
+        pedidoMasCaro = pedidoMasCaroRef.get();
+        List<String> listaCategorias = pedidos.stream()
+                .map(Pedido::getCategoria)
+                .distinct()
+                .collect(Collectors.toList());
+        int totalDeCategorias = listaCategorias.size();
+        BigDecimal montoDeVentas = pedidos.stream()
+                .map(Pedido::getValorTotal)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        int totalDeProductosVendidos = pedidos.stream()
+                .map(Pedido::getCantidad)
+                .reduce(0, Integer::sum);
+        int totalDePedidosRealizados = pedidos.size();
 
-        for (int i = 0; i < pedidos.size(); i++) {
-            Pedido pedidoActual = pedidos.get(i);
-
-            if (pedidoActual == null) {
-                break;
-            }
-
-            if (pedidoActual.isMasBaratoQue(pedidoMasBarato)) {
-                pedidoMasBarato = pedidoActual;
-            }
-
-            if (pedidoActual.isMasCaroQue(pedidoMasCaro)) {
-                pedidoMasCaro = pedidoActual;
-            }
-
-            montoDeVentas = montoDeVentas.add(pedidoActual.getValorTotal());
-            totalDeProductosVendidos += pedidoActual.getCantidad();
-            totalDePedidosRealizados++;
-
-            if (!listaCategorias.contains(pedidoActual.getCategoria())) {
-                totalDeCategorias++;
-                listaCategorias.add(pedidoActual.getCategoria());
-            }
-        }
         InformeSintetico informe = new InformeSintetico(totalDePedidosRealizados, totalDeProductosVendidos, totalDeCategorias, montoDeVentas, pedidoMasBarato, pedidoMasCaro);
         return informe;
     }
 
 }
+
+
