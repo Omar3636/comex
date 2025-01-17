@@ -5,38 +5,33 @@ import java.time.LocalDate;
 
 public class Pedido {
 
-    private String categoria;
-    private String producto;
-    private String cliente;
+    private Categoria categoria;
+    private Producto producto;
+    private Cliente cliente;
 
-    private BigDecimal precio;
+
     private int cantidad;
 
     private LocalDate fecha;
 
-    public Pedido(String categoria, String producto, String cliente, BigDecimal precio, int cantidad, LocalDate fecha) {
+    public Pedido(Categoria categoria, Producto producto, Cliente cliente, int cantidad, LocalDate fecha) {
         this.categoria = categoria;
         this.producto = producto;
         this.cliente = cliente;
-        this.precio = precio;
         this.cantidad = cantidad;
         this.fecha = fecha;
     }
 
-    public String getCategoria() {
+    public Categoria getCategoria() {
         return categoria;
     }
 
-    public String getProducto() {
+    public Producto getProducto() {
         return producto;
     }
 
-    public String getCliente() {
+    public Cliente getCliente() {
         return cliente;
-    }
-
-    public BigDecimal getPrecio() {
-        return precio;
     }
 
     public int getCantidad() {
@@ -48,7 +43,7 @@ public class Pedido {
     }
 
     public BigDecimal getValorTotal() {
-        BigDecimal precio = getPrecio();
+        BigDecimal precio = producto.getPrecio();
         BigDecimal cantidad = new BigDecimal(getCantidad());
         BigDecimal valorTotal = precio.multiply(cantidad);
         return valorTotal;
@@ -56,14 +51,14 @@ public class Pedido {
 
     public boolean isMasBaratoQue(Pedido otroPedido) {
         Pedido pedidoMasBarato = otroPedido;
-        return pedidoMasBarato == null || getPrecio().multiply(new BigDecimal(getCantidad()))
-                .compareTo(pedidoMasBarato.getPrecio().multiply(new BigDecimal(pedidoMasBarato.getCantidad()))) < 0;
+        return pedidoMasBarato == null || producto.getPrecio().multiply(new BigDecimal(getCantidad()))
+                .compareTo(pedidoMasBarato.producto.getPrecio().multiply(new BigDecimal(pedidoMasBarato.getCantidad()))) < 0;
     }
 
     public boolean isMasCaroQue(Pedido otroPedido) {
         Pedido pedidoMasCaro = otroPedido;
-        return pedidoMasCaro == null || getPrecio().multiply(new BigDecimal(getCantidad()))
-                .compareTo(pedidoMasCaro.getPrecio().multiply(new BigDecimal(pedidoMasCaro.getCantidad()))) > 0;
+        return pedidoMasCaro == null || producto.getPrecio().multiply(new BigDecimal(getCantidad()))
+                .compareTo(pedidoMasCaro.producto.getPrecio().multiply(new BigDecimal(pedidoMasCaro.getCantidad()))) > 0;
     }
 
     public boolean estaVacio(Pedido pedido) {
@@ -79,7 +74,7 @@ public class Pedido {
                 "categoria='" + categoria + '\'' +
                 ", producto='" + producto + '\'' +
                 ", cliente='" + cliente + '\'' +
-                ", precio=" + precio +
+                ", precio=" + producto.getPrecio() +
                 ", cantidad=" + cantidad +
                 ", fecha=" + fecha +
                 '}';

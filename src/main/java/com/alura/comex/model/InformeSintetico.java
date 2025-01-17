@@ -50,7 +50,7 @@ public class InformeSintetico {
 
     public String getPedidoMasBaratoString() {
         var nombreProducto = getPedidoMasBarato().getProducto();
-        var valorFormateado = NumberFormat.getCurrencyInstance(new Locale("es", "CL")).format(getPedidoMasBarato().getPrecio().multiply(new BigDecimal(getPedidoMasBarato().getCantidad())).setScale(2, RoundingMode.HALF_DOWN));
+        var valorFormateado = NumberFormat.getCurrencyInstance(new Locale("es", "CL")).format(getPedidoMasBarato().getProducto().getPrecio().multiply(new BigDecimal(getPedidoMasBarato().getCantidad())).setScale(2, RoundingMode.HALF_DOWN));
         return valorFormateado + " (" + nombreProducto+")";
     }
 
@@ -60,7 +60,7 @@ public class InformeSintetico {
 
     public String getPedidoMasCaroString() {
         var nombreProducto = getPedidoMasCaro().getProducto();
-        var valorFormateado = NumberFormat.getCurrencyInstance(new Locale("es", "CL")).format(getPedidoMasCaro().getPrecio().multiply(new BigDecimal(getPedidoMasCaro().getCantidad())).setScale(2, RoundingMode.HALF_DOWN));
+        var valorFormateado = NumberFormat.getCurrencyInstance(new Locale("es", "CL")).format(getPedidoMasCaro().getProducto().getPrecio().multiply(new BigDecimal(getPedidoMasCaro().getCantidad())).setScale(2, RoundingMode.HALF_DOWN));
         return valorFormateado + " (" + nombreProducto+")";
     }
 

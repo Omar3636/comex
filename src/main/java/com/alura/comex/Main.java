@@ -16,13 +16,15 @@ public class Main {
         URL recursoCSV = ClassLoader.getSystemResource("pedidos.csv");
         ProcesadorDeCSV procesadorDeCSV = new ProcesadorDeCSV();
         ArrayList<Pedido> pedidos = procesadorDeCSV.procesarCSV(recursoCSV);
-        ArrayList<Cliente> clientesFieles = procesadorDeCSV.procesarClientesCSV(recursoCSV);
+
+        Cliente cliente = new Cliente();
         CalculosInforme calculosInforme = new CalculosInforme();
 
         InformeSintetico informe = calculosInforme.generarInforme();
 
         System.out.println(informe);
         System.out.println("### INFORME DE CLIENTES FIELES");
-        clientesFieles.forEach(System.out::println);
+        var fielCliente = cliente.agruparPorClientesNumeroDePedidos(pedidos);
+        fielCliente.forEach(System.out::println);
     }
 }
