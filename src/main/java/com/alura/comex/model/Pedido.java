@@ -1,17 +1,14 @@
 package com.alura.comex.model;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 public class Pedido {
 
     private Categoria categoria;
     private Producto producto;
     private Cliente cliente;
-
-
     private int cantidad;
-
     private LocalDate fecha;
 
     public Pedido(Categoria categoria, Producto producto, Cliente cliente, int cantidad, LocalDate fecha) {
@@ -21,6 +18,13 @@ public class Pedido {
         this.cantidad = cantidad;
         this.fecha = fecha;
     }
+
+    public Pedido(Producto producto, int cantidad) {
+        this.producto = producto;
+        this.cantidad = cantidad;
+    }
+
+    public Pedido() {}
 
     public Categoria getCategoria() {
         return categoria;
@@ -42,23 +46,24 @@ public class Pedido {
         return fecha;
     }
 
-    public BigDecimal getValorTotal() {
-        BigDecimal precio = producto.getPrecio();
-        BigDecimal cantidad = new BigDecimal(getCantidad());
-        BigDecimal valorTotal = precio.multiply(cantidad);
+    public Double getValorTotal() {
+        Double precio = producto.getPrecio();
+        int cantidad = getCantidad();
+        Double valorTotal = precio * cantidad;
         return valorTotal;
     }
 
     public boolean isMasBaratoQue(Pedido otroPedido) {
         Pedido pedidoMasBarato = otroPedido;
-        return pedidoMasBarato == null || producto.getPrecio().multiply(new BigDecimal(getCantidad()))
-                .compareTo(pedidoMasBarato.producto.getPrecio().multiply(new BigDecimal(pedidoMasBarato.getCantidad()))) < 0;
+        Double pedidoActual = producto.getPrecio() * getCantidad();
+        return pedidoMasBarato == null || pedidoActual.compareTo(pedidoMasBarato.producto.getPrecio() * pedidoMasBarato.getCantidad()) < 0;
     }
 
     public boolean isMasCaroQue(Pedido otroPedido) {
         Pedido pedidoMasCaro = otroPedido;
-        return pedidoMasCaro == null || producto.getPrecio().multiply(new BigDecimal(getCantidad()))
-                .compareTo(pedidoMasCaro.producto.getPrecio().multiply(new BigDecimal(pedidoMasCaro.getCantidad()))) > 0;
+        Double pedidoActual = producto.getPrecio() * getCantidad();
+        return pedidoMasCaro == null || pedidoActual
+                .compareTo(pedidoMasCaro.producto.getPrecio() * pedidoMasCaro.getCantidad()) > 0;
     }
 
     public boolean estaVacio(Pedido pedido) {
@@ -66,6 +71,11 @@ public class Pedido {
             return true;
         }
         return false;
+    }
+
+    public String mostrarInformePorProducto (Pedido pedido) {
+        return "PRODUCTO: " + pedido.getProducto().getNombre() + "\n"
+                                +"CANTIDAD: " + pedido.getCantidad()+"\n";
     }
 
     @Override

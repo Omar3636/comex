@@ -6,13 +6,15 @@ import com.alura.comex.model.Pedido;
 import com.alura.comex.model.Producto;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
 
 public class ProcesadorDeCSV {
 
@@ -34,7 +36,7 @@ public class ProcesadorDeCSV {
                 String[] registro = linea.split(",");
 
                 Categoria categoria = Categoria.valueOf(registro[0]);
-                Producto producto = new Producto(registro[1], new BigDecimal(registro[2]));
+                Producto producto = new Producto(registro[1], Double.parseDouble(registro[2]));
                 int cantidad = Integer.parseInt(registro[3]);
                 LocalDate fecha = LocalDate.parse(registro[4], DateTimeFormatter.ofPattern("dd/MM/yyyy"));
                 String nombre = registro[5];

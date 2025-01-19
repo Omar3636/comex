@@ -1,15 +1,13 @@
 package com.alura.comex.model;
 
-import java.math.BigDecimal;
-
 public class Producto {
     private String nombre;
-    private BigDecimal precio;
+    private double precio;
 
     public Producto() {
     }
 
-    public Producto(String nombre, BigDecimal precio) {
+    public Producto(String nombre, double precio) {
         this.nombre = nombre;
         this.precio = precio;
     }
@@ -18,7 +16,7 @@ public class Producto {
         return nombre;
     }
 
-    public BigDecimal getPrecio() {
+    public double getPrecio() {
         return precio;
     }
 

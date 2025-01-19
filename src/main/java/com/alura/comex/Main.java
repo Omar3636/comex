@@ -1,14 +1,14 @@
 package com.alura.comex;
 
 import com.alura.comex.maths.CalculosInforme;
+import com.alura.comex.maths.InformeVentasPorCategoria;
 import com.alura.comex.model.Cliente;
-import com.alura.comex.model.InformeSintetico;
+import com.alura.comex.maths.InformeSintetico;
 import com.alura.comex.model.Pedido;
 import com.alura.comex.service.ProcesadorDeCSV;
 
 import java.net.URL;
-
-import java.util.*;
+import java.util.ArrayList;
 
 public class Main {
 
@@ -25,6 +25,12 @@ public class Main {
         System.out.println(informe);
         System.out.println("### INFORME DE CLIENTES FIELES");
         var fielCliente = cliente.agruparPorClientesNumeroDePedidos(pedidos);
-        fielCliente.forEach(System.out::println);
+        //fielCliente.forEach(System.out::println);
+        var informePorCategoria = calculosInforme.listaPorCategoria();
+        //informePorCategoria.forEach(System.out::println);
+        var informePorProducto = calculosInforme.listaPorProducto();
+        informePorProducto.forEach(p ->{
+            System.out.println(p.mostrarInformePorProducto(p));
+        });
     }
 }

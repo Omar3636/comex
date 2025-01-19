@@ -1,7 +1,7 @@
-package com.alura.comex.model;
+package com.alura.comex.maths;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
+import com.alura.comex.model.Pedido;
+
 import java.text.NumberFormat;
 import java.util.Locale;
 
@@ -9,13 +9,13 @@ public class InformeSintetico {
     private int totalDePedidosRealizados;
     private int totalDeProductosVendidos;
     private int totalDeCategorias;
-    private BigDecimal montoDeVentas;
+    private double montoDeVentas;
     private Pedido pedidoMasBarato;
     private Pedido pedidoMasCaro;
 
     public InformeSintetico() {}
 
-    public InformeSintetico(int totalDePedidosRealizados, int totalDeProductosVendidos, int totalDeCategorias, BigDecimal montoDeVentas, Pedido pedidoMasBarato, Pedido pedidoMasCaro) {
+    public InformeSintetico(int totalDePedidosRealizados, int totalDeProductosVendidos, int totalDeCategorias, double montoDeVentas, Pedido pedidoMasBarato, Pedido pedidoMasCaro) {
         this.totalDePedidosRealizados = totalDePedidosRealizados;
         this.totalDeProductosVendidos = totalDeProductosVendidos;
         this.totalDeCategorias = totalDeCategorias;
@@ -36,12 +36,12 @@ public class InformeSintetico {
         return totalDeCategorias;
     }
 
-    public BigDecimal getMontoDeVentas() {
+    public double getMontoDeVentas() {
         return montoDeVentas;
     }
 
     public String getMontoDeVentasString() {
-        return NumberFormat.getCurrencyInstance(new Locale("es", "CL")).format(getMontoDeVentas().setScale(2, RoundingMode.HALF_DOWN));
+        return NumberFormat.getCurrencyInstance(new Locale("es", "CL")).format(getMontoDeVentas());
     }
 
     public Pedido getPedidoMasBarato() {
@@ -50,7 +50,7 @@ public class InformeSintetico {
 
     public String getPedidoMasBaratoString() {
         var nombreProducto = getPedidoMasBarato().getProducto();
-        var valorFormateado = NumberFormat.getCurrencyInstance(new Locale("es", "CL")).format(getPedidoMasBarato().getProducto().getPrecio().multiply(new BigDecimal(getPedidoMasBarato().getCantidad())).setScale(2, RoundingMode.HALF_DOWN));
+        double valorFormateado = getPedidoMasBarato().getProducto().getPrecio() * getPedidoMasBarato().getCantidad();
         return valorFormateado + " (" + nombreProducto+")";
     }
 
@@ -60,7 +60,8 @@ public class InformeSintetico {
 
     public String getPedidoMasCaroString() {
         var nombreProducto = getPedidoMasCaro().getProducto();
-        var valorFormateado = NumberFormat.getCurrencyInstance(new Locale("es", "CL")).format(getPedidoMasCaro().getProducto().getPrecio().multiply(new BigDecimal(getPedidoMasCaro().getCantidad())).setScale(2, RoundingMode.HALF_DOWN));
+        var valorFormateado = NumberFormat.getCurrencyInstance(new Locale("es", "CL")).format(nombreProducto.getPrecio() * getPedidoMasCaro().getCantidad());
+        //var valorFormateado1 = NumberFormat.getCurrencyInstance(new Locale("es", "CL")).format(getPedidoMasCaro().getProducto().getPrecio().multiply(getPedidoMasCaro().getCantidad()).setScale(2, RoundingMode.HALF_DOWN));
         return valorFormateado + " (" + nombreProducto+")";
     }
 
