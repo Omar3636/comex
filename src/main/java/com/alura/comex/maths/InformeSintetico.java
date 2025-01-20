@@ -61,7 +61,6 @@ public class InformeSintetico {
     public String getPedidoMasCaroString() {
         var nombreProducto = getPedidoMasCaro().getProducto();
         var valorFormateado = NumberFormat.getCurrencyInstance(new Locale("es", "CL")).format(nombreProducto.getPrecio() * getPedidoMasCaro().getCantidad());
-        //var valorFormateado1 = NumberFormat.getCurrencyInstance(new Locale("es", "CL")).format(getPedidoMasCaro().getProducto().getPrecio().multiply(getPedidoMasCaro().getCantidad()).setScale(2, RoundingMode.HALF_DOWN));
         return valorFormateado + " (" + nombreProducto+")";
     }
 

@@ -44,9 +44,6 @@ public class Cliente{
 
     public ArrayList<Cliente> agruparPorClientesNumeroDePedidos(ArrayList<Pedido> listaClientes) {
         ArrayList<Cliente> clientesFieles = new ArrayList<>();
-//        clientesFieles = listaClientes.stream()
-//                .map(p ->p.getCliente())
-//                .collect(Collectors.toCollection(ArrayList::new));
         List<String> listaNombresCliente = listaClientes.stream()
                 .map(c -> c.getCliente().getNombre())
                 .toList();

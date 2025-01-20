@@ -1,18 +1,15 @@
 package com.alura.comex.model;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 
 public class Pedido {
-
-    private Categoria categoria;
     private Producto producto;
     private Cliente cliente;
     private int cantidad;
     private LocalDate fecha;
 
-    public Pedido(Categoria categoria, Producto producto, Cliente cliente, int cantidad, LocalDate fecha) {
-        this.categoria = categoria;
+    public Pedido(Producto producto, Cliente cliente, int cantidad, LocalDate fecha) {
+
         this.producto = producto;
         this.cliente = cliente;
         this.cantidad = cantidad;
@@ -24,11 +21,12 @@ public class Pedido {
         this.cantidad = cantidad;
     }
 
+    public Pedido(Producto producto) {
+        this.producto = producto;
+    }
+
     public Pedido() {}
 
-    public Categoria getCategoria() {
-        return categoria;
-    }
 
     public Producto getProducto() {
         return producto;
@@ -81,7 +79,7 @@ public class Pedido {
     @Override
     public String toString() {
         return "Pedido{" +
-                "categoria='" + categoria + '\'' +
+                "categoria='" + producto.getCategoria() + '\'' +
                 ", producto='" + producto + '\'' +
                 ", cliente='" + cliente + '\'' +
                 ", precio=" + producto.getPrecio() +

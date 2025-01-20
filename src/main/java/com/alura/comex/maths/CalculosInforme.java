@@ -6,11 +6,7 @@ import com.alura.comex.model.Producto;
 import com.alura.comex.service.ProcesadorDeCSV;
 
 import java.net.URL;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
@@ -49,8 +45,7 @@ public class CalculosInforme {
         ArrayList<InformeVentasPorCategoria> listaCategoriaArray = new ArrayList<>();
 
         for (Pedido pedido : pedidos) {
-            Producto producto = pedido.getProducto();
-            Categoria categoria = pedido.getCategoria();
+            Categoria categoria = pedido.getProducto().getCategoria();
             String categoriaString = String.valueOf(categoria);
             double precio = pedido.getProducto().getPrecio();
 
@@ -65,14 +60,12 @@ public class CalculosInforme {
         }
         listaCategoriaArray.forEach(e -> {
             String categoriaString = e.getCategoria().toString();
-            DecimalFormat df = new DecimalFormat("#.00");
             e.setCantidad(contadorProductos.getOrDefault(categoriaString, 0));
             e.setTotalPorCategoria(listaCategoria.getOrDefault(e.getCategoria(), 0.0));
         });
-        var listaCategoriaOrdenada = listaCategoriaArray.stream()
+        return listaCategoriaArray.stream()
                 .sorted(Comparator.comparing(InformeVentasPorCategoria::getCategoria))
                 .collect(Collectors.toCollection(ArrayList<InformeVentasPorCategoria>::new));
-        return listaCategoriaOrdenada;
     }
 
     public ArrayList<Pedido> listaPorProducto () {
@@ -86,11 +79,31 @@ public class CalculosInforme {
             listaPedidoCantidad.add(pedidoNuevo);
         }
 
-        ArrayList<Pedido> listaPedidoCantidadOrdenada = listaPedidoCantidad.stream()
+        return listaPedidoCantidad.stream()
                 .sorted(Comparator.comparing(Pedido::getCantidad).reversed())
                 .collect(Collectors.toCollection(ArrayList<Pedido>::new));
+    }
 
-        return listaPedidoCantidadOrdenada;
+    public ArrayList<Producto> listaProductoMasCaroPorCategoria() {
+        ArrayList<Producto> listaProductos = new ArrayList<>();
+
+        for(Pedido pedido : pedidos) {
+            Producto producto = new Producto(pedido.getProducto().getNombre(), pedido.getProducto().getPrecio(), pedido.getProducto().getCategoria());
+            listaProductos.add(producto);
+        }
+
+        return listaProductos.stream()
+                // Agrupar productos por categoría
+                .collect(Collectors.groupingBy(
+                        Producto::getCategoria, // Clave: Categoría del producto
+                        Collectors.maxBy(Comparator.comparing(Producto::getPrecio)) // Valor: Producto con mayor precio
+                ))
+                .values() // Obtener los valores (opcional<Product>)
+                .stream()
+                .filter(Optional::isPresent) // Filtrar los opcionales vacíos
+                .map(Optional::get)// Obtener los productos
+                .sorted(Comparator.comparing(Producto::getCategoria))
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 }
 

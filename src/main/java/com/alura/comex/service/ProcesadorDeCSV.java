@@ -35,15 +35,14 @@ public class ProcesadorDeCSV {
                 String linea = lectorDeLineas.nextLine();
                 String[] registro = linea.split(",");
 
-                Categoria categoria = Categoria.valueOf(registro[0]);
-                Producto producto = new Producto(registro[1], Double.parseDouble(registro[2]));
+                Producto producto = new Producto(registro[1], Double.parseDouble(registro[2]), Categoria.valueOf(registro[0]));
                 int cantidad = Integer.parseInt(registro[3]);
                 LocalDate fecha = LocalDate.parse(registro[4], DateTimeFormatter.ofPattern("dd/MM/yyyy"));
                 String nombre = registro[5];
                 contadorClientes.put(nombre, contadorClientes.getOrDefault(nombre, 0) + 1);
                 Cliente cliente = new Cliente(registro[5]);
                 cliente.setNumeroDePedidos(contadorClientes.get(nombre));
-                Pedido pedido = new Pedido(categoria, producto, cliente, cantidad, fecha);
+                Pedido pedido = new Pedido(producto, cliente, cantidad, fecha);
                 pedidos.add(pedido);
 
                 cantidadDeRegistros++;
