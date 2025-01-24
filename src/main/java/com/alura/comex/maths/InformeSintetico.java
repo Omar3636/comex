@@ -49,8 +49,9 @@ public class InformeSintetico {
     }
 
     public String getPedidoMasBaratoString() {
-        var nombreProducto = getPedidoMasBarato().getProducto();
-        double valorFormateado = getPedidoMasBarato().getProducto().getPrecio() * getPedidoMasBarato().getCantidad();
+        var producto = getPedidoMasBarato().getProducto();
+        var nombreProducto = getPedidoMasBarato().getProducto().getNombre();
+        var valorFormateado = NumberFormat.getCurrencyInstance(new Locale("es", "CL")).format(producto.getPrecio() * getPedidoMasBarato().getCantidad());
         return valorFormateado + " (" + nombreProducto+")";
     }
 
@@ -59,8 +60,9 @@ public class InformeSintetico {
     }
 
     public String getPedidoMasCaroString() {
-        var nombreProducto = getPedidoMasCaro().getProducto();
-        var valorFormateado = NumberFormat.getCurrencyInstance(new Locale("es", "CL")).format(nombreProducto.getPrecio() * getPedidoMasCaro().getCantidad());
+        var producto = getPedidoMasCaro().getProducto();
+        var nombreProducto = getPedidoMasCaro().getProducto().getNombre();
+        var valorFormateado = NumberFormat.getCurrencyInstance(new Locale("es", "CL")).format(producto.getPrecio() * getPedidoMasCaro().getCantidad());
         return valorFormateado + " (" + nombreProducto+")";
     }
 
