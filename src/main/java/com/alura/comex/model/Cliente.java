@@ -78,7 +78,10 @@ public class Cliente{
 
         System.out.println("### LISTA DE CLIENTES RENTABLES ###\n");
         listaNombresCliente.entrySet().stream()
-                        .sorted(Comparator.comparing(entry -> (Double) entry.getValue().get("valorTotal")))
+                        .sorted(Comparator.comparing((Map.Entry<String, Map<String, Number>> entry) -> (Double) entry.getValue().get("valorTotal"))
+                                .reversed())
+                        .limit(2)
+                .sorted(Comparator.comparing(Map.Entry::getKey))
                         .forEach(Entry -> {
                             Map<String, Number> valores = Entry.getValue();
                             NumberFormat formatoMoneda = NumberFormat.getCurrencyInstance(new Locale("es", "CL"));

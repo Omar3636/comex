@@ -37,6 +37,7 @@ public class Main {
                     3.- Informe de Ventas por Categoria.
                     4.- Informe de Productos más Vendidos.
                     5.- Informe Producto Más Caro por Categoria.
+                    6.- Informe de Top2 Clientes Más Rentables.
                     0.- Salir
                     """);
     }
