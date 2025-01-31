@@ -1,67 +1,53 @@
 package com.alura.comex;
 
-import com.alura.comex.maths.CalculosInforme;
-import com.alura.comex.maths.InformeSintetico;
-import com.alura.comex.model.Cliente;
-import com.alura.comex.model.Pedido;
-import com.alura.comex.service.ProcesadorDeCSV;
-
-import java.net.URL;
-import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
 
     public static void main(String[] args) {
-        URL recursoCSV = ClassLoader.getSystemResource("pedidos.csv");
-        ProcesadorDeCSV procesadorDeCSV = new ProcesadorDeCSV();
-        ArrayList<Pedido> pedidos = procesadorDeCSV.procesarCSV(recursoCSV);
-        Cliente cliente = new Cliente();
-        CalculosInforme calculosInforme = new CalculosInforme();
-        Scanner teclado = new Scanner(System.in);
-        int opcion = 1;
+        CommandExecutor executor = new CommandExecutor();
+        try {
+            int opcionElegida = 1;
+            while (opcionElegida != 0) {
+                mostrarMenu();
+                String teclado = new Scanner(System.in).nextLine();
+                opcionElegida = Integer.parseInt(teclado);
 
-        while (opcion != 0) {
-            mostrarMenu();
-            opcion = teclado.nextInt();
-
-            switch (opcion) {
-                case 1: InformeSintetico informe = calculosInforme.generarInforme();
-                    System.out.println(informe);
-                    break;
-                case 2: System.out.println("### INFORME DE CLIENTES FIELES");
-                    var fielCliente = cliente.agruparPorClientesNumeroDePedidos(pedidos);
-                    fielCliente.forEach(System.out::println);
-                    break;
-                case 3: var informePorCategoria = calculosInforme.listaPorCategoria();
-                    informePorCategoria.forEach(System.out::println);
-                    break;
-                case 4: var informePorProducto = calculosInforme.listaPorProducto();
-                    informePorProducto.forEach(p ->{
-                        System.out.println(p.mostrarInformePorProducto(p));
-                    });
-                    break;
-                case 5: var informeProductosMasCarosPorCategoria = calculosInforme.listaProductoMasCaroPorCategoria();
-                    informeProductosMasCarosPorCategoria.forEach(System.out::println);
-                    break;
-                case 0:
-                    System.out.println("Finalizando el programa.");
-                default:
-                    System.out.println("No es una opción válida");
-                    break;
+                switch (opcionElegida) {
+                    case 1 ->  executor.executeCommand(new InformeSinteticoCommand());
+                    case 2 -> executor.executeCommand(new InformeClientesFielesCommand());
+                    case 3 -> executor.executeCommand(new InformeVentasPorCategoriaCommand());
+                    case 4 -> executor.executeCommand(new InformeProductosMasVendidosCommand());
+                    case 5 -> executor.executeCommand(new InformeProductoMasCaroPorCategoriaCommand());
+                    case 6 -> executor.executeCommand(new InformeClientesMasRentablesCommand());
+                    case 0 -> finalizarPrograma();
+                    default -> opcionElegida = opcionInvalida();
+                }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
     private static void mostrarMenu() {
         System.out.println("""
-                    ###   Eliga la opción que desea hacer   ###
-                    1.- Obtener un informe Sintetico.
-                    2.- Obtener informe de clientes fieles.
-                    3.- Obtener informe de monto por Categoria.
-                    4.- Obtener informe de Cantidad por Producto.
-                    5.- Obtener informe Producto más caro por categoria.
+                    ###   ELIGA LA OPCIÓN QUE DESEA VER   ###
+                    1.- Informe Sintetico.
+                    2.- Informe de Clientes Fieles.
+                    3.- Informe de Ventas por Categoria.
+                    4.- Informe de Productos más Vendidos.
+                    5.- Informe Producto Más Caro por Categoria.
                     0.- Salir
                     """);
+    }
+
+    private static int opcionInvalida() {
+        System.out.println("NÚMERO INVÁLIDO!");
+        return 0;
+    }
+
+    private static void finalizarPrograma() {
+        System.out.println("Finalizando el programa...");
+        System.exit(0);
     }
 }

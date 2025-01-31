@@ -69,7 +69,7 @@ public class InformeSintetico {
     @Override
     public String toString() {
         return """
-                #### INFORME DE VALORES TOTALES
+                #### INFORME DE VALORES TOTALES ###\n
                 - TOTAL DE PEDIDOS REALIZADOS: %s
                 - TOTAL DE PRODUCTOS VENDIDOS: %s
                 - TOTAL DE CATEGORIAS: %s

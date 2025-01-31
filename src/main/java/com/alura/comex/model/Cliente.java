@@ -60,6 +60,33 @@ public class Cliente{
         return clientesFielesOrdenada;
     }
 
+    public void agruparPorClientesRentables(ArrayList<Pedido> listaClientes) {
+
+        Map<String, Map<String, Number>> listaNombresCliente = listaClientes.stream()
+                .collect(Collectors.groupingBy(
+                        pedido -> pedido.getCliente().getNombre(), // Agrupar por el nombre del cliente
+                        Collectors.teeing(
+                                Collectors.counting(),                              // Número de pedidos
+                                Collectors.summingDouble(Pedido::getValorTotal),   // Valor total de los pedidos
+                                (conteo, total) -> Map.of(                        // Combinar resultados en un Map
+                                        "numeroDePedidos", conteo,
+                                        "valorTotal", total
+                                )
+                        )
+                ));
+
+        System.out.println("### Lista de Clientes Rentables ###\n");
+        listaNombresCliente.entrySet().stream()
+                        .sorted(Comparator.comparing(entry -> (Double) entry.getValue().get("valorTotal")))
+                        .forEach(Entry -> {
+                            Map<String, Number> valores = Entry.getValue();
+                            System.out.println(
+                                "NOMBRE: " + Entry.getKey() + "\n" +
+                                "N° DE PEDIDOS: " + valores.get("numeroDePedidos") + "\n" +
+                                "MONTO GASTADO: " + valores.get("valorTotal") + "\n");
+        });
+    }
+
     @Override
     public String toString() {
         return """
