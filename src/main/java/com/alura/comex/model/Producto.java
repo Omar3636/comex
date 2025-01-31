@@ -1,5 +1,7 @@
 package com.alura.comex.model;
 
+import java.text.NumberFormat;
+import java.util.Locale;
 import java.util.Objects;
 
 public class Producto {
@@ -16,12 +18,22 @@ public class Producto {
         this.categoria = categoria;
     }
 
+    public Producto(Producto producto) {
+        this.nombre = producto.getNombre();
+        this.precio = producto.getPrecio();
+        this.categoria = producto.getCategoria();
+    }
+
     public String getNombre() {
         return nombre;
     }
 
     public double getPrecio() {
         return precio;
+    }
+
+    public void setPrecio(double precio) {
+        this.precio = precio;
     }
 
     public Categoria getCategoria() {
@@ -46,8 +58,9 @@ public class Producto {
 
     @Override
     public String toString() {
+        String precioFormateado = NumberFormat.getCurrencyInstance(new Locale("es", "CL")).format(precio);
         return "CATEGORIA: " + categoria +"\n"+
                 "PRODUCTO: " + nombre + "\n"+
-                "PRECIO: " + precio + "\n";
+                "PRECIO: " + precioFormateado + "\n";
     }
 }

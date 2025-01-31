@@ -1,5 +1,6 @@
 package com.alura.comex.model;
 
+import java.text.NumberFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -75,15 +76,17 @@ public class Cliente{
                         )
                 ));
 
-        System.out.println("### Lista de Clientes Rentables ###\n");
+        System.out.println("### LISTA DE CLIENTES RENTABLES ###\n");
         listaNombresCliente.entrySet().stream()
                         .sorted(Comparator.comparing(entry -> (Double) entry.getValue().get("valorTotal")))
                         .forEach(Entry -> {
                             Map<String, Number> valores = Entry.getValue();
+                            NumberFormat formatoMoneda = NumberFormat.getCurrencyInstance(new Locale("es", "CL"));
+                            String montoFormateado = formatoMoneda.format(valores.get("valorTotal"));
                             System.out.println(
                                 "NOMBRE: " + Entry.getKey() + "\n" +
                                 "N° DE PEDIDOS: " + valores.get("numeroDePedidos") + "\n" +
-                                "MONTO GASTADO: " + valores.get("valorTotal") + "\n");
+                                "MONTO GASTADO: " + montoFormateado + "\n");
         });
     }
 
