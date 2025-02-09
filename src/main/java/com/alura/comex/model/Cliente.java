@@ -57,8 +57,7 @@ public class Cliente{
                     var cliente = new Cliente(nombre, Math.toIntExact(conteo));
                     clientesFieles.add(cliente);
                 });
-        ArrayList<Cliente> clientesFielesOrdenada = clientesFieles.stream().sorted(Comparator.comparing(Cliente::getNombre)).collect(Collectors.toCollection(ArrayList::new));
-        return clientesFielesOrdenada;
+        return clientesFieles.stream().sorted(Comparator.comparing(Cliente::getNombre)).collect(Collectors.toCollection(ArrayList::new));
     }
 
     public void agruparPorClientesRentables(ArrayList<Pedido> listaClientes) {

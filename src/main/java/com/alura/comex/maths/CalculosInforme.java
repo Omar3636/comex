@@ -7,103 +7,95 @@ import com.alura.comex.service.ProcesadorDeCSV;
 
 import java.net.URL;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 public class CalculosInforme {
-    URL recursoCSV = ClassLoader.getSystemResource("pedidos.csv");
-    ProcesadorDeCSV procesadorDeCSV = new ProcesadorDeCSV();
-    ArrayList<Pedido> pedidos = procesadorDeCSV.procesarCSV(recursoCSV);
-
-    Pedido pedidoMasBarato = null;
-    AtomicReference<Pedido> pedidoMasBaratoRef = new AtomicReference<>(pedidoMasBarato);
-    Pedido pedidoMasCaro = null;
-    AtomicReference<Pedido> pedidoMasCaroRef = new AtomicReference<>(pedidoMasCaro);
+    private final URL recursoCSV = ClassLoader.getSystemResource("pedidos.csv");
+    private final ProcesadorDeCSV procesadorDeCSV = new ProcesadorDeCSV();
+    private final ArrayList<Pedido> pedidos = procesadorDeCSV.procesarCSV(recursoCSV);
 
     public InformeSintetico generarInforme() {
         pedidos.forEach(p ->p.estaVacio(p));
-        pedidos.forEach(p -> { if (p.isMasBaratoQue(pedidoMasBaratoRef.get())) {pedidoMasBaratoRef.set(p);}});
-        pedidoMasBarato = pedidoMasBaratoRef.get();
-        pedidos.forEach(p -> { if (p.isMasCaroQue(pedidoMasCaroRef.get())) {pedidoMasCaroRef.set(p);}});
-        pedidoMasCaro = pedidoMasCaroRef.get();
-        int totalDeCategorias = Categoria.values().length;
-        double montoDeVentas = pedidos.stream()
-                .mapToDouble(Pedido::getValorTotal)
-                .reduce(0, Double::sum);
-        int totalDeProductosVendidos = pedidos.stream()
-                .map(Pedido::getCantidad)
-                .reduce(0, Integer::sum);
+        Pedido pedidoMasBarato = calcularPedidoMasBarato();
+        Pedido pedidoMasCaro = calcularPedidoMasCaro();
+        int totalDeCategorias = calcularTotalCategorias();
+        double montoDeVentas = calcularMontoTotalVentas();
+        int totalDeProductosVendidos = calcularTotalProductosVendidos();
         int totalDePedidosRealizados = pedidos.size();
 
-        InformeSintetico informe = new InformeSintetico(totalDePedidosRealizados, totalDeProductosVendidos, totalDeCategorias, montoDeVentas, pedidoMasBarato, pedidoMasCaro);
-        return informe;
+        return new InformeSintetico(totalDePedidosRealizados, totalDeProductosVendidos,
+                totalDeCategorias, montoDeVentas, pedidoMasBarato, pedidoMasCaro);
     }
 
-    public ArrayList<InformeVentasPorCategoria> listaPorCategoria () {
-        Map<String, Integer> contadorProductos = new HashMap<>();
-        Map<Categoria, Double>  listaCategoria = new HashMap<>();
-        ArrayList<InformeVentasPorCategoria> listaCategoriaArray = new ArrayList<>();
+    private Pedido calcularPedidoMasBarato() {
+        return pedidos.stream()
+                .min(Comparator.comparingDouble(p -> p.getProducto().getPrecio() * p.getCantidad()))
+                .orElse(null);
+    }
 
-        for (Pedido pedido : pedidos) {
-            Categoria categoria = pedido.getProducto().getCategoria();
-            String categoriaString = String.valueOf(categoria);
-            double precio = pedido.getProducto().getPrecio();
+    private Pedido calcularPedidoMasCaro() {
+        return pedidos.stream()
+                .max(Comparator.comparingDouble(p -> p.getProducto().getPrecio() * p.getCantidad()))
+                .orElse(null);
+    }
 
-            contadorProductos.put(categoriaString, contadorProductos.getOrDefault(categoriaString, 0) + 1);
-            listaCategoria.put(categoria, listaCategoria.getOrDefault(categoria, 0.0) + precio);
+    private int calcularTotalCategorias() {
+        return (int) pedidos.stream()
+                .map(p -> p.getProducto().getCategoria())
+                .distinct()
+                .count();
+    }
 
-            if (listaCategoriaArray.stream().noneMatch(e -> e.getCategoria().equals(categoria))) {
-                InformeVentasPorCategoria informe = new InformeVentasPorCategoria(categoria, listaCategoria.get(categoria));
-                informe.setCantidad(contadorProductos.get(categoriaString));
-                listaCategoriaArray.add(informe);
-            }
-        }
-        listaCategoriaArray.forEach(e -> {
-            String categoriaString = e.getCategoria().toString();
-            e.setCantidad(contadorProductos.getOrDefault(categoriaString, 0));
-            e.setTotalPorCategoria(listaCategoria.getOrDefault(e.getCategoria(), 0.0));
-        });
-        return listaCategoriaArray.stream()
+    private double calcularMontoTotalVentas() {
+        return pedidos.stream()
+                .mapToDouble(Pedido::getValorTotal)
+                .sum();
+    }
+
+    private int calcularTotalProductosVendidos() {
+        return pedidos.stream()
+                .mapToInt(Pedido::getCantidad)
+                .sum();
+    }
+
+    public List<InformeVentasPorCategoria> listaPorCategoria() {
+        Map<Categoria, List<Pedido>> pedidosPorCategoria = pedidos.stream()
+                .collect(Collectors.groupingBy(p -> p.getProducto().getCategoria()));
+
+        return pedidosPorCategoria.entrySet().stream()
+                .map(entry -> {
+                    Categoria categoria = entry.getKey();
+                    List<Pedido> pedidosCategoria = entry.getValue();
+                    int cantidadTotal = pedidosCategoria.stream().mapToInt(Pedido::getCantidad).sum();
+                    double totalVentas = pedidosCategoria.stream()
+                            .mapToDouble(p -> p.getProducto().getPrecio() * p.getCantidad())
+                            .sum();
+                    return new InformeVentasPorCategoria(categoria, totalVentas, cantidadTotal);
+                })
                 .sorted(Comparator.comparing(InformeVentasPorCategoria::getCategoria))
-                .collect(Collectors.toCollection(ArrayList<InformeVentasPorCategoria>::new));
+                .collect(Collectors.toList());
     }
 
-    public ArrayList<Pedido> listaPorProducto () {
-        ArrayList<Pedido> listaPedidoCantidad = new ArrayList<>();
-
-        for (Pedido pedido : pedidos) {
-            Producto productoNombre = pedido.getProducto();
-            int cantidad = pedido.getCantidad();
-
-            Pedido pedidoNuevo = new Pedido(productoNombre, cantidad);
-            listaPedidoCantidad.add(pedidoNuevo);
-        }
-
-        return listaPedidoCantidad.stream()
+    public List<Pedido> listaPorProducto() {
+        return pedidos.stream()
+                .map(p -> new Pedido(p.getProducto(), p.getCantidad()))
                 .sorted(Comparator.comparing(Pedido::getCantidad).reversed())
-                .collect(Collectors.toCollection(ArrayList<Pedido>::new));
+                .collect(Collectors.toList());
     }
 
-    public ArrayList<Producto> listaProductoMasCaroPorCategoria() {
-        ArrayList<Producto> listaProductos = new ArrayList<>();
+    public List<Producto> listaProductoMasCaroPorCategoria() {
 
-        for(Pedido pedido : pedidos) {
-            Producto producto = new Producto(pedido.getProducto().getNombre(), pedido.getProducto().getPrecio(), pedido.getProducto().getCategoria());
-            listaProductos.add(producto);
-        }
-
-        return listaProductos.stream()
+        return pedidos.stream()
                 // Agrupar productos por categoría
+                .map(Pedido::getProducto)
                 .collect(Collectors.groupingBy(
                         Producto::getCategoria, // Clave: Categoría del producto
-                        Collectors.maxBy(Comparator.comparing(Producto::getPrecio)) // Valor: Producto con mayor precio
-                ))
-                .values() // Obtener los valores (opcional<Product>)
-                .stream()
+                        Collectors.maxBy(Comparator.comparing(Producto::getPrecio))))
+                .values().stream()
                 .filter(Optional::isPresent) // Filtrar los opcionales vacíos
                 .map(Optional::get)// Obtener los productos
                 .sorted(Comparator.comparing(Producto::getCategoria))
-                .collect(Collectors.toCollection(ArrayList::new));
+                .collect(Collectors.toList());
     }
 }
 

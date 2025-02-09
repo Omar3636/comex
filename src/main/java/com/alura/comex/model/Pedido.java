@@ -3,6 +3,7 @@ package com.alura.comex.model;
 import java.time.LocalDate;
 
 public class Pedido {
+
     private Producto producto;
     private Cliente cliente;
     private int cantidad;

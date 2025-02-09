@@ -15,9 +15,10 @@ public class InformeVentasPorCategoria {
     public InformeVentasPorCategoria() {
     }
 
-    public InformeVentasPorCategoria(Categoria categoria, double totalPorCategoria) {
+    public InformeVentasPorCategoria(Categoria categoria, double totalPorCategoria, int cantidad) {
         this.categoria = categoria;
         this.totalPorCategoria = totalPorCategoria;
+        this.cantidad = cantidad;
     }
 
     public Categoria getCategoria() {
@@ -31,15 +32,6 @@ public class InformeVentasPorCategoria {
     public String getTotalPorCategoriaString() {
         double valor = this.totalPorCategoria;
         return NumberFormat.getCurrencyInstance(new Locale("es", "CL")).format(valor);
-    }
-
-    public void setCantidad(int cantidad) {
-        this.cantidad = cantidad;
-    }
-
-    public void setTotalPorCategoria(double valor) {
-        DecimalFormat df = new DecimalFormat("#.00");
-        this.totalPorCategoria = Double.parseDouble(df.format(valor));
     }
 
     @Override
