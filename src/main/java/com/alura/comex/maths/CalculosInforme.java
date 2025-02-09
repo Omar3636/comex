@@ -84,7 +84,6 @@ public class CalculosInforme {
     }
 
     public List<Producto> listaProductoMasCaroPorCategoria() {
-
         return pedidos.stream()
                 // Agrupar productos por categoría
                 .map(Pedido::getProducto)

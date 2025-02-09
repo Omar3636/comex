@@ -23,13 +23,11 @@ public class ProcesadorDeCSV {
         ArrayList<Pedido> pedidos = new ArrayList<>();
 
         try {
-            Path caminoDelArchivo = caminoDelArchivo = Path.of(recursoCSV.toURI());
+            Path rutaArchivo = Path.of(recursoCSV.toURI());
 
-            Scanner lectorDeLineas = new Scanner(caminoDelArchivo);
-            Map<String, Integer> contadorClientes = new HashMap<>();
+            Scanner lectorDeLineas = new Scanner(rutaArchivo);
+            Map<String, Integer> conteoPedidosPorCliente = new HashMap<>();
             lectorDeLineas.nextLine();
-
-            int cantidadDeRegistros = 0;
 
             while (lectorDeLineas.hasNextLine()) {
                 String linea = lectorDeLineas.nextLine();
@@ -39,13 +37,11 @@ public class ProcesadorDeCSV {
                 int cantidad = Integer.parseInt(registro[3]);
                 LocalDate fecha = LocalDate.parse(registro[4], DateTimeFormatter.ofPattern("dd/MM/yyyy"));
                 String nombre = registro[5];
-                contadorClientes.put(nombre, contadorClientes.getOrDefault(nombre, 0) + 1);
+                conteoPedidosPorCliente.put(nombre, conteoPedidosPorCliente.getOrDefault(nombre, 0) + 1);
                 Cliente cliente = new Cliente(registro[5]);
-                cliente.setNumeroDePedidos(contadorClientes.get(nombre));
+                cliente.setNumeroDePedidos(conteoPedidosPorCliente.get(nombre));
                 Pedido pedido = new Pedido(producto, cliente, cantidad, fecha);
                 pedidos.add(pedido);
-
-                cantidadDeRegistros++;
             }
         } catch (URISyntaxException e) {
             throw new RuntimeException("Archivo pedido.csv no localizado!");

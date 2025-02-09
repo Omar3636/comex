@@ -22,12 +22,7 @@ public class Pedido {
         this.cantidad = cantidad;
     }
 
-    public Pedido(Producto producto) {
-        this.producto = producto;
-    }
-
     public Pedido() {}
-
 
     public Producto getProducto() {
         return producto;
@@ -50,19 +45,6 @@ public class Pedido {
         int cantidad = getCantidad();
         Double valorTotal = precio * cantidad;
         return valorTotal;
-    }
-
-    public boolean isMasBaratoQue(Pedido otroPedido) {
-        Pedido pedidoMasBarato = otroPedido;
-        Double pedidoActual = producto.getPrecio() * getCantidad();
-        return pedidoMasBarato == null || pedidoActual.compareTo(pedidoMasBarato.producto.getPrecio() * pedidoMasBarato.getCantidad()) < 0;
-    }
-
-    public boolean isMasCaroQue(Pedido otroPedido) {
-        Pedido pedidoMasCaro = otroPedido;
-        Double pedidoActual = producto.getPrecio() * getCantidad();
-        return pedidoMasCaro == null || pedidoActual
-                .compareTo(pedidoMasCaro.producto.getPrecio() * pedidoMasCaro.getCantidad()) > 0;
     }
 
     public boolean estaVacio(Pedido pedido) {

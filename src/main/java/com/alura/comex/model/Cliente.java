@@ -27,10 +27,6 @@ public class Cliente{
         this.numeroDePedidos = numero;
     }
 
-    public int getNumeroDePedidos() {
-        return numeroDePedidos;
-    }
-
     @Override
     public boolean equals(Object object) {
         if (object == null || getClass() != object.getClass()) return false;

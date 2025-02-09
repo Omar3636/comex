@@ -20,7 +20,7 @@ public class Main {
                     case 4 -> executor.executeCommand(new InformeProductosMasVendidosCommand());
                     case 5 -> executor.executeCommand(new InformeProductoMasCaroPorCategoriaCommand());
                     case 6 -> executor.executeCommand(new InformeClientesMasRentablesCommand());
-                    case 9 -> System.out.println("Pruebas");
+                    case 7 -> executor.executeCommand(new ListaConJsonOXmlCommand());
                     case 0 -> finalizarPrograma();
                     default -> opcionElegida = opcionInvalida();
                 }
@@ -39,7 +39,7 @@ public class Main {
                     4.- Informe de Productos más Vendidos.
                     5.- Informe Producto Más Caro por Categoria.
                     6.- Informe de Top2 Clientes Más Rentables.
-                    9.- PRUEBAS
+                    7.- Listar archivo Json y Xml.
                     0.- Salir
                     """);
     }
