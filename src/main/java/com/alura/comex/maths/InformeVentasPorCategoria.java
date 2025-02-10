@@ -2,7 +2,6 @@ package com.alura.comex.maths;
 
 import com.alura.comex.model.Categoria;
 
-import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Locale;
 import java.util.Objects;
